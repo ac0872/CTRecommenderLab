@@ -5,6 +5,7 @@ import org.grouplens.lenskit.knn.item.*
 import org.grouplens.lenskit.knn.user.*
 import org.grouplens.lenskit.mf.funksvd.*
 import org.grouplens.lenskit.transform.normalize.*
+import org.grouplens.lenskit.vectors.similarity.*
 
 bind ItemScorer to UserUserItemScorer
 // use item-user mean when user-user fails
@@ -15,4 +16,7 @@ within (UserVectorNormalizer) {
     // for normalization, just center on user means
     bind VectorNormalizer to MeanCenteringVectorNormalizer
 }
-set NeighborhoodSize to 30
+
+set NeighborhoodSize to 60
+set SimilarityDamping to 100
+set MeanDamping to 100
