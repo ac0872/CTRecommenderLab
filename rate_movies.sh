@@ -1,5 +1,5 @@
 #!/bin/bash
-user_id=6041
+user_id=6042
 movies_file=data/movies.csv
 ratings_file=data/ratings.csv
 separator=","
