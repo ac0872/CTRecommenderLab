@@ -1,12 +1,20 @@
+import org.grouplens.lenskit.baseline.*
+import org.grouplens.lenskit.knn.*
 import org.grouplens.lenskit.iterative.*
 import org.grouplens.lenskit.knn.item.*
+import org.grouplens.lenskit.knn.user.*
 import org.grouplens.lenskit.mf.funksvd.*
 import org.grouplens.lenskit.transform.normalize.*
-import org.grouplens.lenskit.knn.*
+import org.grouplens.lenskit.vectors.similarity.*
+
 
 trainTest {
+
+    
+
     dataset crossfold("movielens") {
-        source csvfile("data/original_ratings.csv") {
+	isolate true
+        source csvfile("data/ratings.csv") {
             delimiter ","
             domain {
                 minimum 1.0
@@ -14,38 +22,48 @@ trainTest {
                 precision 0.5
             }
         }
+	
+
     }
 
-    algorithm("UserUser5") {
-        bind ItemScorer to ItemItemScorer
-// set up a baseline predictor
-    bind (BaselineScorer,ItemScorer) to ItemMeanRatingItemScorer
-// use the baseline for normalizing user ratings
-    bind UserVectorNormalizer to BaselineSubtractingUserVectorNormalizer
-// the default neighborhood size is 20, so the next line isn't technically needed
-    set NeighborhoodSize to 5
+    algorithm("ItemItem") {
+  	
+	bind ItemScorer to ItemItemScorer
+
+	// set up a baseline predictor
+
+	bind (BaselineScorer,ItemScorer) to ItemMeanRatingItemScorer
+
+
+	// the default neighborhood size is 20, so the next line isn't technically needed
+
+	set NeighborhoodSize to 50
+	set SimilarityDamping to 20
+	set MeanDamping to 150
+	set MinNeighbors to 10
     }
     
-    algorithm("UserUser10") {
-        bind ItemScorer to ItemItemScorer
-// set up a baseline predictor
-bind (BaselineScorer,ItemScorer) to ItemMeanRatingItemScorer
-// use the baseline for normalizing user ratings
-bind UserVectorNormalizer to BaselineSubtractingUserVectorNormalizer
-// the default neighborhood size is 20, so the next line isn't technically needed
-set NeighborhoodSize to 10
+    algorithm("UserUser") {
+        bind ItemScorer to UserUserItemScorer
+	bind (BaselineScorer,ItemScorer) to UserMeanItemScorer
+	bind (UserMeanBaseline,ItemScorer) to ItemMeanRatingItemScorer
+	within (UserVectorNormalizer) {
+    	// for normalization, just center on user means
+    		bind VectorNormalizer to MeanVarianceNormalizer
+	}
+
+	set MinNeighbors to 15
+	set NeighborhoodSize to 80
+	set MeanDamping to 100
+
     }
     
     
-    algorithm("UserUser20") {
-        bind ItemScorer to ItemItemScorer
-// set up a baseline predictor
-bind (BaselineScorer,ItemScorer) to ItemMeanRatingItemScorer
-// use the baseline for normalizing user ratings
-bind UserVectorNormalizer to BaselineSubtractingUserVectorNormalizer
-// the default neighborhood size is 20, so the next line isn't technically needed
-set NeighborhoodSize to 20
+    algorithm("ItemMan") {
+        bind ItemScorer to ItemMeanRatingItemScorer
+	set MeanDamping to 50
     }
+
 
     metric RMSEPredictMetric
 

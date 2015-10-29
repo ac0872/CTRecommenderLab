@@ -13,13 +13,11 @@ bind ItemScorer to ItemItemScorer
 
 bind (BaselineScorer,ItemScorer) to ItemMeanRatingItemScorer
 
-// use the baseline for normalizing user ratings
-
-bind UserVectorNormalizer to BaselineSubtractingUserVectorNormalizer
 
 // the default neighborhood size is 20, so the next line isn't technically needed
 
-set NeighborhoodSize to 30
-set SimilarityDamping to 100
-set MeanDamping to 100
+set NeighborhoodSize to 50
+set SimilarityDamping to 20
+set MeanDamping to 150
+set MinNeighbors to 10
 

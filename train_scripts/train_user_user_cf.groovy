@@ -14,9 +14,9 @@ bind (UserMeanBaseline,ItemScorer) to ItemMeanRatingItemScorer
 // normalize by subtracting the user's mean rating
 within (UserVectorNormalizer) {
     // for normalization, just center on user means
-    bind VectorNormalizer to MeanCenteringVectorNormalizer
+    bind VectorNormalizer to MeanVarianceNormalizer
 }
 
-set NeighborhoodSize to 60
-set SimilarityDamping to 100
+set MinNeighbors to 15
+set NeighborhoodSize to 80
 set MeanDamping to 100
